@@ -31,5 +31,11 @@ public class PageController {
 		return "sysuser/list";
 	}
 	
+	//去用户列表界面
+	@RequestMapping("/sysuser/toUserList")
+	public String toUserList() {
+		return "sysuser/userlist";
+	}
+	
 	
 }

@@ -5,24 +5,29 @@ import java.util.List;
 public class PageObj<T> {
 	private Integer page = 1;//当前页
 	private Integer total = 0;//总页数
-	private Integer size = 10;//一页显示多少条数据
+	private Integer rows = 10;//一页显示多少条数据
 	private Integer records = 0;//总条数
-	private List<T> root = null;
+	private List<T> root = null;//数据
+	
+	public void calcTotal() {
+		this.total = (int) Math.ceil(records/rows+0.5);
+	}
+	
 	public PageObj() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public PageObj(Integer page, Integer total, Integer size, Integer records, List<T> root) {
+	public PageObj(Integer page, Integer total, Integer rows, Integer records, List<T> root) {
 		super();
 		this.page = page;
 		this.total = total;
-		this.size = size;
+		this.rows = rows;
 		this.records = records;
 		this.root = root;
 	}
 	@Override
 	public String toString() {
-		return "PageObj [page=" + page + ", total=" + total + ", size=" + size + ", records=" + records + ", root="
+		return "PageObj [page=" + page + ", total=" + total + ", rows=" + rows + ", records=" + records + ", root="
 				+ root + "]";
 	}
 	public Integer getPage() {
@@ -37,11 +42,11 @@ public class PageObj<T> {
 	public void setTotal(Integer total) {
 		this.total = total;
 	}
-	public Integer getSize() {
-		return size;
+	public Integer getRows() {
+		return rows;
 	}
-	public void setSize(Integer size) {
-		this.size = size;
+	public void setRows(Integer rows) {
+		this.rows = rows;
 	}
 	public Integer getRecords() {
 		return records;

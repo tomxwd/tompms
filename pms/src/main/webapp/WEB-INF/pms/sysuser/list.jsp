@@ -17,17 +17,11 @@
 <link href="${ctx}/css/font-awesome.css?v=4.4.0" rel="stylesheet">
 
 <!-- jqgrid-->
-<link href="${ctx}/css/plugins/jqgrid/ui.jqgrid.css?0820" rel="stylesheet">
+<link href="${ctx}/css/plugins/jqgrid/ui.jqgrid.css?0820"
+	rel="stylesheet">
 
 <link href="${ctx}/css/animate.css" rel="stylesheet">
 <link href="${ctx}/css/style.css?v=4.1.0" rel="stylesheet">
-
-<style>
-/* Additional style to fix warning dialog position */
-#alertmod_table_list_2 {
-	top: 900px !important;
-}
-</style>
 
 </head>
 
@@ -37,43 +31,49 @@
 			<div class="col-sm-12">
 				<div class="ibox ">
 					<div class="ibox-title">
-						<h5>jQuery Grid Plugin – jqGrid</h5>
+						<h5>用户列表</h5>
+						<div>
+							<div class="">
+								<div class="col-sm-3"></div>
+								<div class="col-sm-4">
+									<input id="search" placeholder="请输入需要查询的用户名或昵称" name="search" class="form-control"
+										type="text" class="valid">
+								</div>
+								<button onclick="searchList()" class="btn btn-sm btn-primary" type="submit">查询</button>
+							</div>
+						</div>
 					</div>
 					<div class="ibox-content">
-						<p>
-							<strong>jqGrid</strong> 是一个用来显示网格数据的jQuery插件，文档比较全面，附带中文版本。访问<a
-								target="_blank" href="http://www.trirand.com/blog/"> 官网</a>
-						</p>
-						<p>jqGrid的主要特点为：</p>
-						<ol>
-							<li>基于jquery UI主题，开发者可以根据客户要求更换不同的主题</li>
-							<li>兼容目前所有流行的web浏览器</li>
-							<li>Ajax分页，可以控制每页显示的记录数</li>
-							<li>支持XML，JSON，数组形式的数据源</li>
-							<li>提供丰富的选项配置及方法事件接口</li>
-							<li>支持表格排序，支持拖动列、隐藏列</li>
-							<li>支持滚动加载数据</li>
-							<li>支持实时编辑保存数据内容</li>
-							<li>支持子表格及树形表格</li>
-							<li>支持多语言</li>
-							<li>免费</li>
-						</ol>
-						<hr>
-						<h4>基本示例</h4>
-
 						<div class="jqGrid_wrapper">
 							<table id="table_list_1"></table>
 							<div id="pager_list_1"></div>
 						</div>
-						<p>&nbsp;</p>
-						<h4 class="m-t">高级用法</h4>
-
-
-						<div class="jqGrid_wrapper">
-							<table id="table_list_2"></table>
-							<div id="pager_list_2"></div>
-						</div>
 					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal inmodal" id="myModal" tabindex="-1" role="dialog"
+		aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content animated flipInY">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+					</button>
+					<h4 class="modal-title">窗口标题</h4>
+					<small class="font-bold">这里可以显示副标题。 
+				</div>
+				<div class="modal-body">
+					<p>
+						<strong>H+</strong>
+						是一个完全响应式，基于Bootstrap3.3.6最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术，她提供了诸多的强大的可以重新组合的UI组件，并集成了最新的jQuery版本(v2.1.1)，当然，也集成了很多功能强大，用途广泛的jQuery插件，她可以用于所有的Web应用程序，如网站管理后台，网站会员中心，CMS，CRM，OA等等，当然，您也可以对她进行深度定制，以做出更强系统。
+					</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-primary">保存s</button>
 				</div>
 			</div>
 		</div>
@@ -94,362 +94,151 @@
 
 	<!-- 自定义js -->
 	<script src="${ctx}/js/content.js?v=1.0.0"></script>
+	
+	<!-- layer javascript -->
+	<script src="${ctx}/js/plugins/layer/layer.min.js"></script>
 
 	<!-- Page-Level Scripts -->
 	<script>
-		$(document).ready(function() {
+		function formatter_date(cellvalue, options, rowObject) {
+			var time = new Date(cellvalue);
+			var year = time.getFullYear();
+			var month = time.getMonth() + 1;
+			var day = time.getDate();
+			return year + "-" + month + "-" + day;
+		}
 
-			$.jgrid.defaults.styleUI = 'Bootstrap';
-			// Examle data for jqGrid
-			var mydata = [ {
-				id : "1",
-				invdate : "2010-05-24",
-				name : "test",
-				note : "note",
-				tax : "10.00",
-				total : "2111.00"
-			}, {
-				id : "2",
-				invdate : "2010-05-25",
-				name : "test2",
-				note : "note2",
-				tax : "20.00",
-				total : "320.00"
-			}, {
-				id : "3",
-				invdate : "2007-09-01",
-				name : "test3",
-				note : "note3",
-				tax : "30.00",
-				total : "430.00"
-			}, {
-				id : "4",
-				invdate : "2007-10-04",
-				name : "test",
-				note : "note",
-				tax : "10.00",
-				total : "210.00"
-			}, {
-				id : "5",
-				invdate : "2007-10-05",
-				name : "test2",
-				note : "note2",
-				tax : "20.00",
-				total : "320.00"
-			}, {
-				id : "6",
-				invdate : "2007-09-06",
-				name : "test3",
-				note : "note3",
-				tax : "30.00",
-				total : "430.00"
-			}, {
-				id : "7",
-				invdate : "2007-10-04",
-				name : "test",
-				note : "note",
-				tax : "10.00",
-				total : "210.00"
-			}, {
-				id : "8",
-				invdate : "2007-10-03",
-				name : "test2",
-				note : "note2",
-				amount : "300.00",
-				tax : "21.00",
-				total : "320.00"
-			}, {
-				id : "9",
-				invdate : "2007-09-01",
-				name : "test3",
-				note : "note3",
-				amount : "400.00",
-				tax : "30.00",
-				total : "430.00"
-			}, {
-				id : "11",
-				invdate : "2007-10-01",
-				name : "test",
-				note : "note",
-				amount : "200.00",
-				tax : "10.00",
-				total : "210.00"
-			}, {
-				id : "12",
-				invdate : "2007-10-02",
-				name : "test2",
-				note : "note2",
-				amount : "300.00",
-				tax : "20.00",
-				total : "320.00"
-			}, {
-				id : "13",
-				invdate : "2007-09-01",
-				name : "test3",
-				note : "note3",
-				amount : "400.00",
-				tax : "30.00",
-				total : "430.00"
-			}, {
-				id : "14",
-				invdate : "2007-10-04",
-				name : "test",
-				note : "note",
-				amount : "200.00",
-				tax : "10.00",
-				total : "210.00"
-			}, {
-				id : "15",
-				invdate : "2007-10-05",
-				name : "test2",
-				note : "note2",
-				amount : "300.00",
-				tax : "20.00",
-				total : "320.00"
-			}, {
-				id : "16",
-				invdate : "2007-09-06",
-				name : "test3",
-				note : "note3",
-				amount : "400.00",
-				tax : "30.00",
-				total : "430.00"
-			}, {
-				id : "17",
-				invdate : "2007-10-04",
-				name : "test",
-				note : "note",
-				amount : "200.00",
-				tax : "10.00",
-				total : "210.00"
-			}, {
-				id : "18",
-				invdate : "2007-10-03",
-				name : "test2",
-				note : "note2",
-				amount : "300.00",
-				tax : "20.00",
-				total : "320.00"
-			}, {
-				id : "19",
-				invdate : "2007-09-01",
-				name : "test3",
-				note : "note3",
-				amount : "400.00",
-				tax : "30.00",
-				total : "430.00"
-			}, {
-				id : "21",
-				invdate : "2007-10-01",
-				name : "test",
-				note : "note",
-				amount : "200.00",
-				tax : "10.00",
-				total : "210.00"
-			}, {
-				id : "22",
-				invdate : "2007-10-02",
-				name : "test2",
-				note : "note2",
-				amount : "300.00",
-				tax : "20.00",
-				total : "320.00"
-			}, {
-				id : "23",
-				invdate : "2007-09-01",
-				name : "test3",
-				note : "note3",
-				amount : "400.00",
-				tax : "30.00",
-				total : "430.00"
-			}, {
-				id : "24",
-				invdate : "2007-10-04",
-				name : "test",
-				note : "note",
-				amount : "200.00",
-				tax : "10.00",
-				total : "210.00"
-			}, {
-				id : "25",
-				invdate : "2007-10-05",
-				name : "test2",
-				note : "note2",
-				amount : "300.00",
-				tax : "20.00",
-				total : "320.00"
-			}, {
-				id : "26",
-				invdate : "2007-09-06",
-				name : "test3",
-				note : "note3",
-				amount : "400.00",
-				tax : "30.00",
-				total : "430.00"
-			}, {
-				id : "27",
-				invdate : "2007-10-04",
-				name : "test",
-				note : "note",
-				amount : "200.00",
-				tax : "10.00",
-				total : "210.00"
-			}, {
-				id : "28",
-				invdate : "2007-10-03",
-				name : "test2",
-				note : "note2",
-				amount : "300.00",
-				tax : "20.00",
-				total : "320.00"
-			}, {
-				id : "29",
-				invdate : "2007-09-01",
-				name : "test3",
-				note : "note3",
-				amount : "400.00",
-				tax : "30.00",
-				total : "430.00"
-			} ];
+		function formatter_status(cellvalue, options, rowObject) {
+			if (cellvalue == 1) {
+				return "<span style='color:green'>在职</span>"
+			} else {
+				return "<span style='color:red'>离职</span>"
+			}
+		}
 
-			// Configuration for jqGrid Example 1
-			$("#table_list_1").jqGrid({
-				mtype:'POST',
-				url : "${ctx}/sysuser/sysuserlist",
-				datatype : "json",
-				jsonReader : {
-					root:'root',
-					page:'page',
-					total:'total',
-					records:'records',
-					id:'id'
-				},
-				height : 250,
-				autowidth : true,
-				shrinkToFit : true,
-				rowNum : 14,
-				rowList : [ 10, 20, 30 ],
-				colNames : [ 'id号', '用户名', '昵称', '状态', '电话', '邮箱', 'QQ号', '注册时间' ],
-				colModel : [ {
-					name : 'id',
-					width : 60,
-				}, {
-					name : 'uname',
-					width : 90,
-				}, {
-					name : 'nickname',
-					width : 100
-				}, {
-					name : 'delstatus',
-					width : 80,
-				}, {
-					name : 'phone',
-					width : 80,
-				}, {
-					name : 'email',
-					width : 80,
-				}, {
-					name : 'qq',
-					width : 150,
-				}, {
-					name : 'regtime',
-					width : 150,
-				} ],
-				pager : "#pager_list_1",
-				viewrecords : true,
-				caption : "用户信息列表",
-				hidegrid : false
-			});
+		function formatter_operation(cellvalue, options, rowObject) {
+			console.log(rowObject);
+			onblur = "changeInput('uname','账号不能为空！')"
+			var eidtFunc = "onclick='editSysUser(" + rowObject.id + ")";
+			var str = "<button class='btn btn-sm btn-primary'>编辑</button>&nbsp;&nbsp;&nbsp;<button class='btn btn-sm btn-danger'>删除</button>";
+			return "<a data-toggle='modal' href='${ctx}/sysuser/info?id="+rowObject.id+"' data-target='#myModal'>Click me</a>";
 
-			// Configuration for jqGrid Example 2
-			$("#table_list_2").jqGrid({
-				data : mydata,
-				datatype : "local",
-				height : 450,
-				autowidth : true,
-				shrinkToFit : true,
-				rowNum : 20,
-				rowList : [ 10, 20, 30 ],
-				colNames : [ '序号', '日期', '客户', '金额', '运费', '总额', '备注' ],
-				colModel : [ {
-					name : 'id',
-					index : 'id',
-					editable : true,
-					width : 60,
-					sorttype : "int",
-					search : true
-				}, {
-					name : 'invdate',
-					index : 'invdate',
-					editable : true,
-					width : 90,
-					sorttype : "date",
-					formatter : "date"
-				}, {
-					name : 'name',
-					index : 'name',
-					editable : true,
-					width : 100
-				}, {
-					name : 'amount',
-					index : 'amount',
-					editable : true,
-					width : 80,
-					align : "right",
-					sorttype : "float",
-					formatter : "number"
-				}, {
-					name : 'tax',
-					index : 'tax',
-					editable : true,
-					width : 80,
-					align : "right",
-					sorttype : "float"
-				}, {
-					name : 'total',
-					index : 'total',
-					editable : true,
-					width : 80,
-					align : "right",
-					sorttype : "float"
-				}, {
-					name : 'note',
-					index : 'note',
-					editable : true,
-					width : 100,
-					sortable : false
-				} ],
-				pager : "#pager_list_2",
-				viewrecords : true,
-				caption : "jqGrid 示例2",
-				add : true,
-				edit : true,
-				addtext : 'Add',
-				edittext : 'Edit',
-				hidegrid : false
-			});
+		}
 
-			// Add selection
-			$("#table_list_2").setSelection(4, true);
+		function editSysUser(id) {
 
-			// Setup buttons
-			$("#table_list_2").jqGrid('navGrid', '#pager_list_2', {
-				edit : true,
-				add : true,
-				del : true,
-				search : true
-			}, {
-				height : 200,
-				reloadAfterSubmit : true
-			});
+		}
+		
+		function searchList(){
+			var search = $("#search").val();
+			/* if(search){
+				console.log(search);
+				$("#table_list_1").jqGrid('setGridParam',{ 
+	                url:"${ctx}/sysuser/sysuserlist",
+	                postData:{'searchNameOrNickName':search}, //发送数据 
+	                page:1 
+	            }).trigger("reloadGrid"); //重新载入
+			}else{
+				layer.alert("查询条件不能为空！", {
+					skin: 'layui-layer-molv', //样式类名
+					shift:4
+					});
+			} */
+			$("#table_list_1").jqGrid('setGridParam',{ 
+                url:"${ctx}/sysuser/sysuserlist",
+                postData:{'searchNameOrNickName':search}, //发送数据 
+                page:1 
+            }).trigger("reloadGrid"); //重新载入
+		}
 
-			// Add responsive to jqGrid
-			$(window).bind('resize', function() {
-				var width = $('.jqGrid_wrapper').width();
-				$('#table_list_1').setGridWidth(width);
-				$('#table_list_2').setGridWidth(width);
-			});
-		});
+		$(document).ready(
+				function() {
+				
+				//搜索框绑定事件
+				$("#search").keyup(function(event){
+					if(event.keyCode==13){
+						searchList();
+					}
+				});
+				
+
+					$.jgrid.defaults.styleUI = 'Bootstrap';
+
+					// Configuration for jqGrid Example 1
+					$("#table_list_1").jqGrid(
+							{
+								mtype : 'POST',
+								url : "${ctx}/sysuser/sysuserlist",
+								datatype : "json",
+								jsonReader : {
+									root : 'root',//数据
+									page : 'page',//当前页数
+									total : 'total',//总页数
+									records : 'records',//总条数
+									rows : 'size',
+									id : 'id'
+								},
+								height : 400,
+								autowidth : true,
+								shrinkToFit : true,
+								rowNum : 10,
+								rowList : [ 10, 20, 30, 50 ],
+								emptyrecords : '没有符合条件的数据！',
+								colNames : [ 'id号', '用户名', '昵称', '电话', '邮箱',
+										'QQ号', '注册时间', '状态', '操作' ],
+								colModel : [ {
+									name : 'id',
+									width : 60,
+								}, {
+									name : 'uname',
+									width : 90,
+								}, {
+									name : 'nickname',
+									width : 100
+								}, {
+									name : 'phone',
+									width : 80,
+								}, {
+									name : 'email',
+									width : 150,
+								}, {
+									name : 'qq',
+									width : 100,
+								}, {
+									name : 'regtime',
+									width : 150,
+									formatter : formatter_date,
+								}, {
+									name : 'delstatus',
+									width : 80,
+									formatter : formatter_status,
+								}, {
+									width : 100,
+									formatter : formatter_operation,
+								} ],
+								pager : "#pager_list_1",
+								viewrecords : true,
+								caption : "用户信息列表",
+								hidegrid : false
+							});
+					//使用自带的查询添加等功能
+					$("#table_list_1").jqGrid('navGrid', '#pager_list_1', {
+						edit : true,
+						add : true,
+						del : true,
+						search : true
+					}, {
+						height : 200,
+						reloadAfterSubmit : true
+					}).jqGrid('navButtonAdd','#pager_list_1',{
+						caption:"add",
+						buttonicon:"ui-icon-del",
+						onClickButton: function(){   
+							alert("Deleting Row");  
+						},   
+					});
+
+				});
 	</script>
 
 </body>

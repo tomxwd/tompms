@@ -18,6 +18,8 @@ import org.apache.ibatis.type.JdbcType;
 import top.tomxwd.pms.pojo.sysuser.Sysuser;
 import top.tomxwd.pms.pojo.sysuser.SysuserExample;
 import top.tomxwd.pms.vo.PageObj;
+import top.tomxwd.pms.vo.QueryObj;
+import top.tomxwd.pms.vo.sysuser.SysuserQueryObj;
 
 public interface SysuserMapper {
 
@@ -26,8 +28,11 @@ public interface SysuserMapper {
 	 * @param record
 	 * @return
 	 */
-	@Select("select id,uname,nickname,delstatus,phone,email,qq,regtime from t_sysuser limit #{page},#{size}")
-	List<Sysuser> sysuserList(PageObj<Sysuser> pageObj);
+	@SelectProvider(type=MySysuserSqlProvider.class,method="sysuserList")
+	List<Sysuser> sysuserList(SysuserQueryObj query);
+	
+	@SelectProvider(type=MySysuserSqlProvider.class,method="sysuserListCount")
+	Integer sysuserListCount(SysuserQueryObj query);
 	
     @SelectProvider(type=SysuserSqlProvider.class, method="countByExample")
     long countByExample(SysuserExample example);

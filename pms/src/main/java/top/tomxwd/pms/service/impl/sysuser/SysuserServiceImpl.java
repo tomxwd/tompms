@@ -1,6 +1,8 @@
 package top.tomxwd.pms.service.impl.sysuser;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,6 +21,8 @@ import top.tomxwd.pms.service.sysuser.SysuserService;
 import top.tomxwd.pms.utils.CookieUtils;
 import top.tomxwd.pms.vo.MsgObj;
 import top.tomxwd.pms.vo.PageObj;
+import top.tomxwd.pms.vo.QueryObj;
+import top.tomxwd.pms.vo.sysuser.SysuserQueryObj;
 
 @Service
 public class SysuserServiceImpl implements SysuserService {
@@ -60,10 +64,42 @@ public class SysuserServiceImpl implements SysuserService {
 	}
 
 	@Override
-	public List<Sysuser> sysuserList(PageObj<Sysuser> pageObj) {
-		pageObj.setPage(pageObj.getPage()-1);
-		List<Sysuser> sysuserList = mapper.sysuserList(pageObj);
-		return sysuserList;
+	public PageObj<Sysuser> sysuserList(PageObj<Sysuser> pageObj,SysuserQueryObj queryObj) {
+		queryObj.init(pageObj.getPage(),pageObj.getRows());
+		//记录
+		pageObj.setRoot(mapper.sysuserList(queryObj));
+		//总条数
+		pageObj.setRecords(mapper.sysuserListCount(queryObj));
+		//计算总页数
+		pageObj.calcTotal();
+		return pageObj;
+	}
+
+	@Override
+	public boolean checkUnameExist(String uname) {
+		SysuserExample example = new SysuserExample();
+		example.createCriteria().andUnameEqualTo(uname);
+		List<Sysuser> list = mapper.selectByExample(example);
+		if(list.size()==0) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public MsgObj addUser(Sysuser user) {
+		int i = mapper.insertSelective(user);
+		if(0==i) {
+			return new MsgObj(0, "添加用户失败");
+		}
+		return new MsgObj(1,"添加用户成功");
+	}
+
+	@Override
+	public Sysuser findSysuserById(Integer id) {
+		Sysuser sysuser = mapper.selectByPrimaryKey(id);
+		sysuser.setPwd("");
+		return sysuser;
 	}
 
 	

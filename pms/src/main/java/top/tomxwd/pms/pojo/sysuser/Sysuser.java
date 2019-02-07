@@ -2,6 +2,8 @@ package top.tomxwd.pms.pojo.sysuser;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 public class Sysuser {
     private Integer id;
 
@@ -18,14 +20,22 @@ public class Sysuser {
     private String email;
 
     private String qq;
-
+    
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date regtime;
 
     private String img;
 
     private Integer deptId;
 
-    public Integer getId() {
+    @Override
+	public String toString() {
+		return "Sysuser [id=" + id + ", uname=" + uname + ", nickname=" + nickname + ", delstatus=" + delstatus
+				+ ", pwd=" + pwd + ", phone=" + phone + ", email=" + email + ", qq=" + qq + ", regtime=" + regtime
+				+ ", img=" + img + ", deptId=" + deptId + "]";
+	}
+
+	public Integer getId() {
         return id;
     }
 

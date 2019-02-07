@@ -62,6 +62,7 @@
 					</a>
 						<ul class="nav nav-second-level">
 							<li><a class="J_menuItem" href="${ctx}/sysuser/toAddUser" data-index="0">添加用户</a></li>
+							<li><a class="J_menuItem" href="${ctx}/sysuser/toUserList" data-index="0">用户列表</a></li>
 							<li><a class="J_menuItem" href="table_jqgrid.html">jqgrid</a></li>
 							<li><a class="J_menuItem" href="${ctx}/sysuser/list">用户列表</a></li>
 							<li><a class="J_menuItem" href="index_v4.html">主页示例四</a></li>

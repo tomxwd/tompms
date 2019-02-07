@@ -29,7 +29,7 @@
 					<h5>添加用户</h5>
 				</div>
 				<div class="ibox-content">
-					<form class="form-horizontal m-t" id="addUserForm">
+					<form class="form-horizontal m-t" method="post" id="addUserForm">
 						<div class="form-group">
 							<label class="col-sm-3 control-label">用户名：</label>
 							<div class="col-sm-4">
@@ -57,7 +57,7 @@
 						<div class="form-group">
 							<label class="col-sm-3 control-label">确认密码：</label>
 							<div class="col-sm-4">
-								<input id="pwd" name="pwd" placeholder="请再次输入密码" class="form-control"
+								<input id="check_pwd" name="check_pwd" placeholder="请再次输入密码" class="form-control"
 									type="password"
 									class="valid">
 							</div>
@@ -91,7 +91,7 @@
 							<div class="col-sm-4">
 								<input id="regtime" name="regtime" class="form-control"
 									type="text"
-									class="valid">
+									class="layer-date laydate-icon">
 							</div>
 						</div>
 
@@ -109,7 +109,6 @@
 	</div>
 
 
-
 	<!-- 全局js -->
 	<script src="${ctx}/js/jquery.min.js?v=2.1.4"></script>
 	<script src="${ctx}/js/bootstrap.min.js?v=3.3.6"></script>
@@ -122,7 +121,114 @@
 	<script src="${ctx}/js/plugins/validate/messages_zh.min.js"></script>
 
 	<script src="${ctx}/js/demo/form-validate-demo.js"></script>
-
+	
+	<!-- layerDate plugin javascript -->
+	<script src="${ctx}/js/plugins/layer/laydate/laydate.js"></script>
+	
+	<!-- 表单校验jqueryvalidate -->
+	<script src="${ctx}/js/plugins/validate/jquery.validate.min.js"></script>
+	<!-- 表单校验默认的提示字 -->
+	<script src="${ctx}/js/plugins/validate/messages_zh.min.js"></script>
+	
+	<!-- jqueryform表单插件 -->
+	<script src="${ctx}/js/jquery.form.js"></script>
+	
+	<!-- layer javascript -->
+	<script src="${ctx}/js/plugins/layer/layer.min.js"></script>
+	
+	<script type="text/javascript">
+	$(function(){
+		laydate({
+			event:"focus",
+			elem:"#regtime",
+		});
+		
+		/* jquery Validate 添加自定义校验规则 */
+		/* $.validator.addMethod(name,method,message) */
+		$.validator.addMethod("checkPhone",function(value,element,param){
+			var pattern = /^1[3,4,5,8,9][0-9]{9}$/
+			return pattern.test(value);
+		},"请输入11位有效的手机号码")
+		
+		/* jquery Validate 初始化 */
+		$("#addUserForm").validate({
+			rules:{
+				uname:{
+					required:true,
+					remote:{
+						url:"${ctx}/sysuser/checkuname",
+						type:"get",
+						dataType:"json",
+						data:{
+							uname:function(){
+								return $("#uname").val();
+							}
+						},
+						
+					},
+				},
+				nickname:"required",
+				pwd:"required",
+				check_pwd:{
+					required:true,
+					equalTo:"#pwd"
+				},
+				phone:{
+					required:true,
+					checkPhone:true
+				},
+				email:"required",
+				qq:"required",
+				regtime:"required",
+			},messages:{
+				uname:{
+					required:"用户名不能为空",
+					remote:"该用户名已存在"
+				},
+				nickname:"昵称不能为空",
+				pwd:"密码不能为空",
+				check_pwd:{
+					required:"确认密码为空",
+					equalTo:"两次输入的密码不一样"
+				},
+				phone:{
+					required:"电话不能为空",
+					checkPhone:"请输入11位有效的手机号码"
+				},
+				email:"邮箱不能为空",
+				qq:"qq不能为空",
+				regtime:" 注册日期不能为空",
+			},submitHandler:function(){
+				//1、序列化表单
+				var formDate = $("#addUserForm").serialize();
+				//2、使用ajax请求提交
+				/* $.post("${ctx}/sysuser/adduser",{uname:$("#uname").val(),pwd:$("#pwd").val(),nickname:$("#nickname").val(),regtime:$("#regtime").val()},function(data){
+					console.log(data);
+				}) */
+				$.post("${ctx}/sysuser/adduser",formDate,function(data){
+					if(data.ok==1){
+						layer.alert(data.msg, {
+							skin: 'layui-layer-molv', //样式类名
+							shift:4
+							},function(index){
+								layer.close(index);
+								$("#addUserForm").resetForm();
+							});
+					}else{
+						parent.layer.alert(data.msg,{
+							skin: 'layui-layer-molv',
+							shift:4
+						});
+					}
+				})
+			}
+		});
+		
+		
+	})
+	
+	</script>
+	
 </body>
 
 </html>
