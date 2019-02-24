@@ -46,4 +46,19 @@ public interface SysuserService {
 	 * @return
 	 */
 	public Sysuser findSysuserById(Integer id);
+	
+	/**
+	 * 根据id删除用户信息
+	 * @param id
+	 * @return
+	 */
+	public MsgObj deleteUser(Integer id);
+	
+	/**
+	 * 根据用户id以及状态离职或复职
+	 * @param id
+	 * @param status
+	 * @return
+	 */
+	public MsgObj dimissOrRestore(Integer id,Integer status);
 }

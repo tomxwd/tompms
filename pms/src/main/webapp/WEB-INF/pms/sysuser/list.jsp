@@ -31,15 +31,16 @@
 			<div class="col-sm-12">
 				<div class="ibox ">
 					<div class="ibox-title">
-						<h5>用户列表</h5>
 						<div>
 							<div class="">
-								<div class="col-sm-3"></div>
+								<div class="col-sm-3">
+									<span id="add_sysuser" class="btn btn-primary">添加用户</span>
+								</div>
 								<div class="col-sm-4">
 									<input id="search" placeholder="请输入需要查询的用户名或昵称" name="search" class="form-control"
 										type="text" class="valid">
 								</div>
-								<button onclick="searchList()" class="btn btn-sm btn-primary" type="submit">查询</button>
+								<button onclick="searchList()" class="btn btn-primary" type="submit">查询</button>
 							</div>
 						</div>
 					</div>
@@ -62,18 +63,72 @@
 					<button type="button" class="close" data-dismiss="modal">
 						<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
 					</button>
-					<h4 class="modal-title">窗口标题</h4>
-					<small class="font-bold">这里可以显示副标题。 
+					<h4 class="modal-title">编辑用户</h4>
+					<small class="font-bold"></small>
 				</div>
 				<div class="modal-body">
-					<p>
-						<strong>H+</strong>
-						是一个完全响应式，基于Bootstrap3.3.6最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术，她提供了诸多的强大的可以重新组合的UI组件，并集成了最新的jQuery版本(v2.1.1)，当然，也集成了很多功能强大，用途广泛的jQuery插件，她可以用于所有的Web应用程序，如网站管理后台，网站会员中心，CMS，CRM，OA等等，当然，您也可以对她进行深度定制，以做出更强系统。
-					</p>
+					<form class="form-horizontal m-t" method="post" id="infoForm">
+						<div class="form-group">
+							<label class="col-sm-3 control-label">用户名：</label>
+							<div class="col-sm-7">
+								<input id="uname" name="uname"  placeholder="请输入用户名" class="form-control"
+									type="text"
+									class="valid">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">昵称：</label>
+							<div class="col-sm-7">
+								<input id="nickname" name="nickname" placeholder="请输入昵称" class="form-control"
+									type="text"
+									class="valid">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">电话：</label>
+							<div class="col-sm-7">
+								<input id="phone" placeholder="必填" name="phone" class="form-control"
+									type="text"
+									class="valid">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">电子邮箱：</label>
+							<div class="col-sm-7">
+								<input id="email" name="email" class="form-control"
+									type="text"
+									class="valid">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">QQ：</label>
+							<div class="col-sm-7">
+								<input id="qq" name="qq" class="form-control"
+									type="text"
+									class="valid">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">注册时间：</label>
+							<div class="col-sm-7">
+								<input id="regtime" name="regtime" class="form-control"
+									type="text"
+									class="layer-date laydate-icon">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<div class="col-sm-offset-3 col-sm-8">
+								<button class="btn btn-sm btn-primary" type="submit">添加用户</button>
+								<button class="btn btn-sm btn-default" type="reset">重置</button>
+							</div>
+						</div>
+						
+					</form>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary">保存s</button>
+					<button type="button" class="btn btn-primary">保存</button>
 				</div>
 			</div>
 		</div>
@@ -95,8 +150,12 @@
 	<!-- 自定义js -->
 	<script src="${ctx}/js/content.js?v=1.0.0"></script>
 	
+	<!-- layerDate plugin javascript -->
+	<script src="${ctx}/js/plugins/layer/laydate/laydate.js"></script>
+	
 	<!-- layer javascript -->
 	<script src="${ctx}/js/plugins/layer/layer.min.js"></script>
+	
 
 	<!-- Page-Level Scripts -->
 	<script>
@@ -117,16 +176,59 @@
 		}
 
 		function formatter_operation(cellvalue, options, rowObject) {
-			console.log(rowObject);
-			onblur = "changeInput('uname','账号不能为空！')"
-			var eidtFunc = "onclick='editSysUser(" + rowObject.id + ")";
-			var str = "<button class='btn btn-sm btn-primary'>编辑</button>&nbsp;&nbsp;&nbsp;<button class='btn btn-sm btn-danger'>删除</button>";
-			return "<a data-toggle='modal' href='${ctx}/sysuser/info?id="+rowObject.id+"' data-target='#myModal'>Click me</a>";
-
+			var editfunc = "onclick='editSysUser(" + rowObject.id + ")'";
+			var dimissfunc = "onclick='dimissSysUser("+rowObject.id+","+rowObject.delstatus+")'";
+			var removefunc = "onclick='deleteSysUser("+rowObject.id+")'";
+			var editStr = "<a  class='btn btn-primary btn-sm'"+editfunc+"><i class='fa fa-paste'></i>编辑</a>";
+			if(rowObject.delstatus==1){
+				var dimissStr = "<a class='btn btn-warning btn-sm'"+dimissfunc+"><i class='fa fa-times'></i>离职</a>";
+			}else{
+				var dimissStr = "<a class='btn btn-info btn-sm'"+dimissfunc+"><i class='fa fa-check'></i>复职</a>";
+			}
+			var removeStr = "<a class='btn btn-danger btn-sm' "+removefunc+"><i class='fa fa-warning'>删除</a>";
+			return editStr+"&nbsp;&nbsp;&nbsp;&nbsp;"+dimissStr+"&nbsp;&nbsp;&nbsp;&nbsp;"+removeStr;
 		}
 
 		function editSysUser(id) {
-
+			/* $("#showModal").modal({
+                remote: "${ctx}/sysuser/showInfo/?id="+id
+            }); */
+            $("#myModal").modal('show');
+		}
+		
+		//离职复职按钮
+		function dimissSysUser(id,status) {
+			var statusStr;
+			if(status==1){
+				statusStr = "确定将该用户离职吗？";
+			}else{
+				statusStr = "确定将该用户复职吗？";
+			}
+			layer.confirm(statusStr,{title:'温馨提示',skin: 'layui-layer-molv'},function(index){
+				$.get("${ctx}/sysuser/dimissOrRestore",{id:id,delstatus:status},function(data){
+					layer.alert(data.msg, {
+						skin: 'layui-layer-molv', //样式类名
+						shift:4
+						});
+					$("#table_list_1").trigger("reloadGrid");
+					layer.close(index);
+				});
+			})
+		}
+		
+		//删除按钮事件
+		function deleteSysUser(id){
+			layer.confirm('确定删除该用户吗？删除后不可恢复',{icon:2 ,title:'温馨提示',skin: 'layui-layer-molv'},function(index){
+				$.get("${ctx}/sysuser/deleteUser",{id:id},function(data){
+					layer.alert(data.msg, {
+						skin: 'layui-layer-molv', //样式类名
+						shift:4
+						});
+					$("#table_list_1").trigger("reloadGrid");
+					layer.close(index);
+				});
+			})
+			
 		}
 		
 		function searchList(){
@@ -153,6 +255,11 @@
 
 		$(document).ready(
 				function() {
+				//初始化日历插件	
+				laydate({
+					event:"focus",
+					elem:"#regtime",
+				});
 				
 				//搜索框绑定事件
 				$("#search").keyup(function(event){
@@ -178,7 +285,7 @@
 									rows : 'size',
 									id : 'id'
 								},
-								height : 400,
+								height : 470,
 								autowidth : true,
 								shrinkToFit : true,
 								rowNum : 10,
@@ -194,7 +301,7 @@
 									width : 90,
 								}, {
 									name : 'nickname',
-									width : 100
+									width : 80
 								}, {
 									name : 'phone',
 									width : 80,
@@ -213,7 +320,7 @@
 									width : 80,
 									formatter : formatter_status,
 								}, {
-									width : 100,
+									width : 200,
 									formatter : formatter_operation,
 								} ],
 								pager : "#pager_list_1",
@@ -222,21 +329,22 @@
 								hidegrid : false
 							});
 					//使用自带的查询添加等功能
-					$("#table_list_1").jqGrid('navGrid', '#pager_list_1', {
-						edit : true,
-						add : true,
-						del : true,
-						search : true
+					/* $("#table_list_1").jqGrid('navGrid', '#pager_list_1', {
+						edit : false,
+						add : false,
+						refresh: false,
+						del : false,
+						search : false
 					}, {
 						height : 200,
 						reloadAfterSubmit : true
 					}).jqGrid('navButtonAdd','#pager_list_1',{
-						caption:"add",
+						caption:"<span style='width:100px;heigth:100px' class='btn-primary'>添加</span>",
 						buttonicon:"ui-icon-del",
 						onClickButton: function(){   
 							alert("Deleting Row");  
 						},   
-					});
+					}); */
 
 				});
 	</script>

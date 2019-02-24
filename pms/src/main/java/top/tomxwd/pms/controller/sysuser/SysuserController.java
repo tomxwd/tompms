@@ -69,4 +69,26 @@ public class SysuserController {
 		return null;
 	}
 	
+	@RequestMapping(value="/showInfo",method=RequestMethod.GET)
+	@ResponseBody
+	public Sysuser showInfo(Integer id) {
+		Sysuser sysuser = service.findSysuserById(id);
+		return sysuser;
+	}
+	
+	@RequestMapping(value="/deleteUser",method=RequestMethod.GET)
+	@ResponseBody
+	public MsgObj deleteUser(Integer id) {
+		MsgObj msgObj = service.deleteUser(id);
+		return msgObj;
+	}
+	
+	@RequestMapping(value="/dimissOrRestore",method=RequestMethod.GET)
+	@ResponseBody
+	public MsgObj dimissOrRestore(Integer id,Integer delstatus) {
+		System.out.println("离职复职"+id+delstatus);
+		MsgObj msgObj = service.dimissOrRestore(id, delstatus);
+		return msgObj;
+	}
+	
 }

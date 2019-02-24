@@ -102,5 +102,53 @@ public class SysuserServiceImpl implements SysuserService {
 		return sysuser;
 	}
 
+	@Override
+	public MsgObj deleteUser(Integer id) {
+		int key = mapper.deleteByPrimaryKey(id);
+		System.out.println(key);
+		MsgObj msgObj = new MsgObj();
+		if(key==0) {
+			msgObj.setOk(0);
+			msgObj.setMsg("删除失败，请稍后再试！");
+		}else {
+			msgObj.setOk(1);
+			msgObj.setMsg("删除成功！");
+		}
+		return msgObj;
+	}
+
+	@Override
+	public MsgObj dimissOrRestore(Integer id, Integer status) {
+		MsgObj msg = new MsgObj();
+		if(status==1) {
+			//执行离职
+			Sysuser user = new Sysuser();
+			user.setId(id);
+			user.setDelstatus(0);
+			int i = mapper.updateByPrimaryKeySelective(user);
+			if(i==1) {
+				msg.setOk(1);
+				msg.setMsg("离职成功！");
+			}else {
+				msg.setOk(0);
+				msg.setMsg("系统故障，离职失败！");
+			}
+		}else {
+			//执行复职
+			Sysuser user = new Sysuser();
+			user.setId(id);
+			user.setDelstatus(1);
+			int i = mapper.updateByPrimaryKeySelective(user);
+			if(i==1) {
+				msg.setOk(1);
+				msg.setMsg("复职成功！");
+			}else {
+				msg.setOk(0);
+				msg.setMsg("系统故障，复职失败！");
+			}
+		}
+		return msg;
+	}
+
 	
 }
