@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import top.tomxwd.pms.pojo.sysuser.Sysuser;
 import top.tomxwd.pms.vo.MsgObj;
 import top.tomxwd.pms.vo.PageObj;
@@ -36,9 +38,10 @@ public interface SysuserService {
 	/**
 	 * 添加新用户
 	 * @param user
+	 * @param headImg 
 	 * @return
 	 */
-	public MsgObj addUser(Sysuser user);
+	public MsgObj addUser(Sysuser user, MultipartFile[] headImg);
 	
 	/**
 	 * 根据id查用户信息
@@ -61,4 +64,32 @@ public interface SysuserService {
 	 * @return
 	 */
 	public MsgObj dimissOrRestore(Integer id,Integer status);
+	
+	/**
+	 * 编辑用户
+	 * @param user
+	 * @return
+	 */
+	public MsgObj updateUser(Sysuser user);
+	
+	/**
+	 * 一次性加载jsTree数据
+	 * @return
+	 */
+	public List<Map<String, Object>> oneJsTree();
+
+	/**
+	 * 懒加载jsTree数据
+	 * @param id
+	 * @return
+	 */
+	public List<Map<String, Object>> lazyJsTree(String id);
+	
+	/**
+	 * 添加树节点
+	 * @param text
+	 * @param parent_id
+	 * @return
+	 */
+	public MsgObj addTree(String text, Integer parent_id);
 }

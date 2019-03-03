@@ -1,6 +1,7 @@
 package top.tomxwd.pms.mapper.sysuser;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.DeleteProvider;
@@ -124,4 +125,17 @@ public interface SysuserMapper {
         "where id = #{id,jdbcType=INTEGER}"
     })
     int updateByPrimaryKey(Sysuser record);
+    
+    //第n层,第一层父id为0 (懒加载亦可）
+    @Select("select id,text from t_jstree where parent_id=#{id}")
+	List<Map<String, Object>> oneJsTreeFirst(Long id);
+    
+    //查看是否有子结点
+    @Select("select count(*) from t_jstree where parent_id=#{id}")
+	Integer checkChild(Long id);
+    
+    @Insert("insert into t_jstree (text,parent_id) values (#{text},#{parent_id})")
+	Integer insertTree(@Param("text")String text,@Param("parent_id") Integer parent_id);
+    
+    
 }

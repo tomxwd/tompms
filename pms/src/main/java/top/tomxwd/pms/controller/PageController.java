@@ -37,5 +37,17 @@ public class PageController {
 		return "sysuser/userlist";
 	}
 	
+	//去文件上传页面
+	@RequestMapping("/sysuser/toFileUpload")
+	public String toFileUpload() {
+		return "sysuser/fileupload";
+	}
+	
+	//去jsTree页面
+	@RequestMapping("/sysuser/toJsTree")
+	public String toJsTree() {
+		return "sysuser/jsTree";
+	}
+	
 	
 }

@@ -66,12 +66,20 @@
 					<h4 class="modal-title">编辑用户</h4>
 					<small class="font-bold"></small>
 				</div>
-				<div class="modal-body">
 					<form class="form-horizontal m-t" method="post" id="infoForm">
+				<div class="modal-body">
+						<div class="form-group">
+							<label class="col-sm-3 control-label">用户id：</label>
+							<div class="col-sm-7">
+								<input id="id" name="id" readonly="readonly"  placeholder="用户id" class="form-control"
+									type="text"
+									class="valid">
+							</div>
+						</div>
 						<div class="form-group">
 							<label class="col-sm-3 control-label">用户名：</label>
 							<div class="col-sm-7">
-								<input id="uname" name="uname"  placeholder="请输入用户名" class="form-control"
+								<input id="uname" name="uname" readonly="readonly"  placeholder="请输入用户名" class="form-control"
 									type="text"
 									class="valid">
 							</div>
@@ -111,25 +119,24 @@
 						<div class="form-group">
 							<label class="col-sm-3 control-label">注册时间：</label>
 							<div class="col-sm-7">
-								<input id="regtime" name="regtime" class="form-control"
+								<input id="regtime"  name="regtime" class="form-control"
 									type="text"
 									class="layer-date laydate-icon">
 							</div>
 						</div>
 
-						<div class="form-group">
+						<!-- <div class="form-group">
 							<div class="col-sm-offset-3 col-sm-8">
-								<button class="btn btn-sm btn-primary" type="submit">添加用户</button>
-								<button class="btn btn-sm btn-default" type="reset">重置</button>
+								<button class="btn btn-sm btn-primary" type="submit">编辑完成</button>
 							</div>
-						</div>
+						</div> -->
 						
-					</form>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary">保存</button>
+					<button type="submit" class="btn btn-primary">保存</button>
 				</div>
+					</form>
 			</div>
 		</div>
 	</div>
@@ -156,15 +163,24 @@
 	<!-- layer javascript -->
 	<script src="${ctx}/js/plugins/layer/layer.min.js"></script>
 	
+	<!-- 表单校验jqueryvalidate -->
+	<script src="${ctx}/js/plugins/validate/jquery.validate.min.js"></script>
+	<!-- 表单校验默认的提示字 -->
+	<script src="${ctx}/js/plugins/validate/messages_zh.min.js"></script>
 
 	<!-- Page-Level Scripts -->
 	<script>
-		function formatter_date(cellvalue, options, rowObject) {
-			var time = new Date(cellvalue);
+		//日期格式化
+		function formatDate(value){
+			var time = new Date(value);
 			var year = time.getFullYear();
 			var month = time.getMonth() + 1;
 			var day = time.getDate();
 			return year + "-" + month + "-" + day;
+		}
+	
+		function formatter_date(cellvalue, options, rowObject) {
+			return formatDate(cellvalue);
 		}
 
 		function formatter_status(cellvalue, options, rowObject) {
@@ -176,7 +192,8 @@
 		}
 
 		function formatter_operation(cellvalue, options, rowObject) {
-			var editfunc = "onclick='editSysUser(" + rowObject.id + ")'";
+			var formObj = JSON.stringify(rowObject);
+			var editfunc = "onclick='editSysUser(" + formObj + ")'";
 			var dimissfunc = "onclick='dimissSysUser("+rowObject.id+","+rowObject.delstatus+")'";
 			var removefunc = "onclick='deleteSysUser("+rowObject.id+")'";
 			var editStr = "<a  class='btn btn-primary btn-sm'"+editfunc+"><i class='fa fa-paste'></i>编辑</a>";
@@ -189,10 +206,19 @@
 			return editStr+"&nbsp;&nbsp;&nbsp;&nbsp;"+dimissStr+"&nbsp;&nbsp;&nbsp;&nbsp;"+removeStr;
 		}
 
-		function editSysUser(id) {
+		function editSysUser(obj) {
 			/* $("#showModal").modal({
                 remote: "${ctx}/sysuser/showInfo/?id="+id
             }); */
+            console.log(obj);
+            console.log(obj.id)
+            $("#id").val(obj.id);
+            $("#uname").val(obj.uname);
+            $("#nickname").val(obj.nickname);
+            $("#phone").val(obj.phone);
+            $("#qq").val(obj.qq);
+            $("#email").val(obj.email);
+            $("#regtime").val(formatDate(obj.regtime));
             $("#myModal").modal('show');
 		}
 		
@@ -345,6 +371,61 @@
 							alert("Deleting Row");  
 						},   
 					}); */
+					
+
+					/* jquery Validate 添加自定义校验规则 */
+					/* $.validator.addMethod(name,method,message) */
+					$.validator.addMethod("checkPhone",function(value,element,param){
+						var pattern = /^1[3,4,5,8,9][0-9]{9}$/
+						return pattern.test(value);
+					},"请输入11位有效的手机号码")
+					
+					/* jquery Validate 初始化 */
+					$("#infoForm").validate({
+						rules:{
+							nickname:"required",
+							phone:{
+								required:true,
+								checkPhone:true
+							},
+							email:"required",
+							qq:"required",
+							regtime:"required",
+						},messages:{
+							nickname:"昵称不能为空",
+							phone:{
+								required:"电话不能为空",
+								checkPhone:"请输入11位有效的手机号码"
+							},
+							email:"邮箱不能为空",
+							qq:"qq不能为空",
+							regtime:" 注册日期不能为空",
+						},submitHandler:function(){
+							//1、序列化表单
+							var formDate = $("#infoForm").serialize();
+							//2、使用ajax请求提交
+							/* $.post("${ctx}/sysuser/adduser",{uname:$("#uname").val(),pwd:$("#pwd").val(),nickname:$("#nickname").val(),regtime:$("#regtime").val()},function(data){
+								console.log(data);
+							}) */
+							$.post("${ctx}/sysuser/edituser",formDate,function(data){
+								if(data.ok==1){
+									layer.alert(data.msg, {
+										skin: 'layui-layer-molv', //样式类名
+										shift:4
+										},function(index){
+											layer.close(index);
+										});
+								}else{
+									parent.layer.alert(data.msg,{
+										skin: 'layui-layer-molv',
+										shift:4
+									});
+								}
+								$("#myModal").modal('hide');
+								$("#table_list_1").trigger("reloadGrid");
+							})
+						}
+					});
 
 				});
 	</script>

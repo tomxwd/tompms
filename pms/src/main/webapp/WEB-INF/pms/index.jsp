@@ -61,10 +61,12 @@
 							class="nav-label">pms</span> <span class="fa arrow"></span>
 					</a>
 						<ul class="nav nav-second-level">
+							<li><a class="J_menuItem" href="${ctx}/sysuser/toJsTree" data-index="0">jstree练习</a></li>
 							<li><a class="J_menuItem" href="${ctx}/sysuser/toAddUser" data-index="0">添加用户</a></li>
 							<li><a class="J_menuItem" href="${ctx}/sysuser/toUserList" data-index="0">用户列表</a></li>
 							<li><a class="J_menuItem" href="table_jqgrid.html">jqgrid</a></li>
 							<li><a class="J_menuItem" href="${ctx}/sysuser/list">用户列表</a></li>
+							<li><a class="J_menuItem" href="${ctx}/sysuser/toFileUpload">文件上传</a></li>
 							<li><a class="J_menuItem" href="index_v4.html">主页示例四</a></li>
 							<li><a href="index_v5.html" target="_blank">主页示例五</a></li>
 						</ul>

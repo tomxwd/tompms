@@ -29,7 +29,7 @@
 					<h5>添加用户</h5>
 				</div>
 				<div class="ibox-content">
-					<form class="form-horizontal m-t" method="post" id="addUserForm">
+					<form class="form-horizontal m-t" method="post" id="addUserForm" enctype="multipart/form-data">
 						<div class="form-group">
 							<label class="col-sm-3 control-label">用户名：</label>
 							<div class="col-sm-4">
@@ -86,12 +86,21 @@
 									class="valid">
 							</div>
 						</div>
+						
 						<div class="form-group">
 							<label class="col-sm-3 control-label">注册时间：</label>
 							<div class="col-sm-4">
 								<input id="regtime" name="regtime" class="form-control"
 									type="text"
 									class="layer-date laydate-icon">
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-sm-3 control-label">上传头像：</label>
+							<div class="col-sm-4">
+								<input id="head_img" name="headImg" class="form-control"
+									type="file">
 							</div>
 						</div>
 
@@ -200,12 +209,18 @@
 				regtime:" 注册日期不能为空",
 			},submitHandler:function(){
 				//1、序列化表单
-				var formDate = $("#addUserForm").serialize();
+				/* var formData = $("#addUserForm").serialize(); */
+				//可以文件上传的
+				var formData = new FormData($("#addUserForm")[0]); 
+				console.log(formData)
+				console.log(formData.get("uname"));
+				console.log(formData.get("headImg"))
+				
 				//2、使用ajax请求提交
 				/* $.post("${ctx}/sysuser/adduser",{uname:$("#uname").val(),pwd:$("#pwd").val(),nickname:$("#nickname").val(),regtime:$("#regtime").val()},function(data){
 					console.log(data);
 				}) */
-				$.post("${ctx}/sysuser/adduser",formDate,function(data){
+				$.ajax({url:"${ctx}/sysuser/adduser",type:'POST',data:formData,processData:false,contentType:false,success:function(data){
 					if(data.ok==1){
 						layer.alert(data.msg, {
 							skin: 'layui-layer-molv', //样式类名
@@ -220,6 +235,7 @@
 							shift:4
 						});
 					}
+				}
 				})
 			}
 		});
